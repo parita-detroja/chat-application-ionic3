@@ -19,6 +19,9 @@ export class ConstantProvider {
   public static ALERT_TITLE_WARNING: string = "Warning";
   public static ALERT_TITLE_SUCCESS: string = "Success";
 
+  /** base url constant */
+  public static BASE_URL: string = "https://us-central1-surfer-2c9ac.cloudfunctions.net/";
+
   constructor(private loghandlingProvider: LoghandlingProvider) {
      this.loghandlingProvider.showLog(this.TAG,'Hello ConstantProvider Provider');
   }
