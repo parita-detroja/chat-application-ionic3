@@ -3,9 +3,14 @@ import { Platform } from 'ionic-angular';
 
 import { Facebook } from '@ionic-native/facebook';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFireDatabase } from 'angularfire2/database';
+import * as firebase from 'firebase/app';
+import { Observable } from 'rxjs/Rx';
 
 import { LoghandlingProvider } from '../loghandling/loghandling';
 import { usercredentials } from '../../models/interfaces/usercredentials';
+import { tableNames } from '../../app/app.firebaseconfig';
+import { LocalstorageProvider } from '../localstorage/localstorage'
 
 /*
   Generated class for the AuthenticationProvider provider.
@@ -21,7 +26,8 @@ export class AuthenticationProvider {
    * Basic constructor for LogServiceProvider.
    */
   constructor(private loghandlingProvider: LoghandlingProvider, private platform: Platform,
-  private facebook: Facebook, private angularFireAuth: AngularFireAuth) {
+  private facebook: Facebook, private angularFireAuth: AngularFireAuth, 
+  private angularFireDatabase: AngularFireDatabase, private localstorageProvider: LocalstorageProvider) {
     this.loghandlingProvider.showLog(this.TAG,'Hello AuthenticationProvider Provider');
   }
 
@@ -49,17 +55,38 @@ export class AuthenticationProvider {
    * Allow user to login with email and password from firebase.
    * @param credentials user login credential having email and password.
    */
-  login(credentials: usercredentials) {
-    var promise = new Promise((resolve, reject) => {
-      this.angularFireAuth.auth.signInWithEmailAndPassword(credentials.email, credentials.password).then(() => {
-        resolve(true);
-      }).catch((err) => {
-        reject(err);
-       })
-    })
+  login(credentials: usercredentials): firebase.Promise<any> {
+        return this.angularFireAuth.auth.signInWithEmailAndPassword(credentials.email, credentials.password);    
+  } 
 
-    return promise;
-    
-  }  
+  /**
+   * Update user profile according to user credentials on firebase.
+   * @param user user details after login
+   */
+  updateProfile(user): firebase.Promise<any> {
+    user.updatedAt = firebase.database['ServerValue']['TIMESTAMP'];
+
+    let providerData = user.providerData;
+    if (providerData && providerData.providerId === 'facebook.com')
+      user.photoURL = `https://graph.facebook.com/${providerData.uid}/picture?type=square`;
+
+    this.localstorageProvider.setUsername(user.displayName);
+      
+    return this.angularFireDatabase.object(tableNames.User + '/' + user.uid).update(user);
+  }
+
+  /**
+   * Sign out user.
+   */
+  signOut(): firebase.Promise<any> {
+    return this.angularFireAuth.auth.signOut();
+  }
+
+  /**
+   * Get authentication status.
+   */
+  getAuthenticationStatus(): Observable<firebase.User> {
+    return this.angularFireAuth.authState;
+  }
 
 }

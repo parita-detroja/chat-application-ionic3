@@ -6,3 +6,12 @@ export var config = {
     storageBucket: 'surfer-2c9ac.appspot.com',
     messagingSenderId: '34191777330'
   };
+
+/** firebase tables */
+export const tableNames = {
+    User               : 'users',
+    Contacts           : 'contacts',
+    ChatChannel        : 'chat_channels',
+    ChatMember         : 'chat_members',
+    ChatMessage        : 'chat_messages',
+};
