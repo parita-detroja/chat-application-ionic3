@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, LoadingController } from 'ionic-angular';
+import { ContactslistProvider } from '../../providers/contactslist/contactslist';
+import { LocalstorageProvider } from '../../providers/localstorage/localstorage';
 
 /**
  * Generated class for the TabContactsPage page.
  *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
+ * Display list of contacts.
  */
 
 @IonicPage()
@@ -14,12 +15,25 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'tab-contacts.html',
 })
 export class TabContactsPage {
+  contactList: Array<any>;
+  email: string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(private loadingController: LoadingController, private contactslistProvider: ContactslistProvider,
+  private localstorageProvider: LocalstorageProvider) {
+    this.email = this.localstorageProvider.getEmail()
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad TabContactsPage');
+    let loading = this.loadingController.create();
+    loading.present();
+    this.contactslistProvider.getContactsList().subscribe((contacts) => {
+      this.contactList = contacts;
+      loading.dismiss();
+    })
+  }
+
+  log(status: string){
+    console.log("status : " + status);
   }
 
 }

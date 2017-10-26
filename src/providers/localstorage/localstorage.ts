@@ -30,5 +30,16 @@ export class LocalstorageProvider {
     localStorage.setItem(ConstantProvider.KEY_USERNAME, username);
   }
 
+  public getEmail() {
+    let email = localStorage.getItem(ConstantProvider.KEY_EMAIL);
+    if (email === null || email === undefined) {
+      return "";
+    }
+    return email;
+  }
 
+  public setEmail(email) {
+    this.loghandlingProvider.showLog(this.TAG, email + ' as email stored');
+    localStorage.setItem(ConstantProvider.KEY_EMAIL, email);
+  }
 }

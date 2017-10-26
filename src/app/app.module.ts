@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Facebook } from '@ionic-native/facebook';
 import { HttpModule } from '@angular/http';
+import { Keyboard } from '@ionic-native/keyboard';
 
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireModule } from 'angularfire2';
@@ -20,6 +21,9 @@ import { LoghandlingProvider } from '../providers/loghandling/loghandling';
 import { ConstantProvider } from '../providers/constant/constant';
 import { ApihandlingProvider } from '../providers/apihandling/apihandling';
 import { LocalstorageProvider } from '../providers/localstorage/localstorage';
+import { ContactslistProvider } from '../providers/contactslist/contactslist';
+import { ChathandlingProvider } from '../providers/chathandling/chathandling';
+import { EmojiProvider } from '../providers/emojiprovider/emojiprovider';
 
 @NgModule({
   declarations: [
@@ -46,9 +50,13 @@ import { LocalstorageProvider } from '../providers/localstorage/localstorage';
     LoghandlingProvider,
     ConstantProvider,
     Facebook,
+    Keyboard,
     ApihandlingProvider,
     AngularFireAuth,
-    LocalstorageProvider
+    LocalstorageProvider,
+    ContactslistProvider,
+    ChathandlingProvider,
+    EmojiProvider
   ]
 })
 export class AppModule {}

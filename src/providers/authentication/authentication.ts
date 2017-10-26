@@ -71,6 +71,7 @@ export class AuthenticationProvider {
       user.photoURL = `https://graph.facebook.com/${providerData.uid}/picture?type=square`;
 
     this.localstorageProvider.setUsername(user.displayName);
+    this.localstorageProvider.setEmail(user.email);
       
     return this.angularFireDatabase.object(tableNames.User + '/' + user.uid).update(user);
   }
@@ -89,4 +90,27 @@ export class AuthenticationProvider {
     return this.angularFireAuth.authState;
   }
 
+  /**
+   * get full profile
+   */
+  getFullProfile(uid?: string): Observable<UserModel> {
+    if (uid)
+      return this.angularFireDatabase.object(tableNames.User + '/' + uid);
+    
+    return Observable.create((observer) => {
+      this.getAuthenticationStatus().subscribe((user: firebase.User) => {
+        if (user !== null)
+          this.angularFireDatabase.object(tableNames.User + '/' + user.uid).subscribe((res) => observer.next(res));
+      });
+    });
+  }
+
+}
+
+export class UserModel {
+  uid?: string;
+  email?: string;
+  displayName?: string;
+  photoURL?: string;
+  providerData?: any;
 }

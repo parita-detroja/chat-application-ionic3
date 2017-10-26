@@ -7,6 +7,8 @@ import { LoghandlingProvider } from '../providers/loghandling/loghandling';
 import { AuthenticationProvider } from '../providers/authentication/authentication';
 import { LocalstorageProvider } from '../providers/localstorage/localstorage';
 
+declare let cordova: any;
+
 @Component({
   templateUrl: 'app.html'
 })
@@ -16,6 +18,7 @@ export class MyApp {
   rootPage:any;
   pages: Array<{title: string, component: any}>;
   username: string = 'User name';
+  TAG: string = "MyApp";
 
   /**
    * Default constructor.
@@ -59,9 +62,23 @@ export class MyApp {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
+
+      cordova.plugins.Keyboard.disableScroll(true);
+
       this.statusBar.styleDefault();
       this.splashScreen.hide();
       this.loghandlingProvider.changeDebuggingState(true);
+
+      this.platform.registerBackButtonAction(() => {
+          // get current active page
+          let view = this.nav.getActive();
+          if (view.component.name == "ChatMessagePage") {          
+            this.nav.setRoot('TabsPage');
+          } else {
+              // go to previous page
+              this.nav.pop({});
+          }
+      });
     });
 
     let loading = this.loadingController.create();
@@ -74,7 +91,7 @@ export class MyApp {
       }, (error) => {
         loading.dismiss();
         this.rootPage = 'LoginPage';
-        console.log('Error: ' + JSON.stringify(error));
+        this.loghandlingProvider.showLog(this.TAG,'Error: ' + JSON.stringify(error));
       });
   }
 }

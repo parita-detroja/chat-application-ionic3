@@ -24,6 +24,7 @@ export class ConstantProvider {
 
   /** local storage keys */
   public static KEY_USERNAME: string = "username";
+  public static KEY_EMAIL: string = "email";
 
   constructor(private loghandlingProvider: LoghandlingProvider) {
      this.loghandlingProvider.showLog(this.TAG,'Hello ConstantProvider Provider');
