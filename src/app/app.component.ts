@@ -73,11 +73,14 @@ export class MyApp {
       this.platform.registerBackButtonAction(() => {
           // get current active page
           let view = this.nav.getActive();
-          if (view.component.name === "ChatMessagePage" || view.component.name === "ParsonalchatPage") {
-            this.loghandlingProvider.showLog(this.TAG,'back of perticular');
+          if(this.nav.canGoBack()){
+            let loading = this.loadingController.create();
+            loading.present();
             this.nav.pop();
-          } else if(this.nav.canGoBack()){
-            this.nav.pop();
+            if (view.component.name === "ChatMessagePage" || view.component.name === "ParsonalchatPage") {
+              this.nav.setRoot("TabsPage");
+              loading.dismiss();
+            }
           } else{
             this.platform.exitApp();
           }

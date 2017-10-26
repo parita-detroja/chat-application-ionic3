@@ -1,9 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { IonicPage, NavParams, Platform, TextInput, Content } from 'ionic-angular';
+import { IonicPage, NavParams, Platform, TextInput, Content, LoadingController } from 'ionic-angular';
 import { Keyboard } from '@ionic-native/keyboard';
 
 import { ChathandlingProvider } from '../../providers/chathandling/chathandling';
 import { UserModel } from '../../providers/authentication/authentication';
+import { ApihandlingProvider } from '../../providers/apihandling/apihandling';
+import { LoghandlingProvider } from '../../providers/loghandling/loghandling';
+import { ConstantProvider } from '../../providers/constant/constant';
 
 /**
  * Generated class for the ParsonalchatPage page.
@@ -18,10 +21,13 @@ import { UserModel } from '../../providers/authentication/authentication';
 })
 export class ParsonalchatPage implements OnInit, OnDestroy {
 
+  private TAG: string = 'ParsonalchatPage';
   chatText: string = '';
   chatMessages: Array<string>;
   textMaxLength: number = 400;
   user: UserModel;
+  channelId: string;
+  loading: any;
 
   showEmojiPicker = false;
   @ViewChild('chat_input') messageInput: TextInput;
@@ -35,21 +41,44 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
    * @param platform used for keyboard and scrolling related issue.
    * @param keyboard keyboard related handling
    * @param chatProvider chat handling
+   * @param apihandlingProvider provides api methods.
+   * @param loghandlingProvider log handling provider.
+   * @param loadingController loading controller.
    */
   constructor( 
     private navParams: NavParams,
     private platform: Platform,
     private keyboard: Keyboard,
-    private chatProvider: ChathandlingProvider,) {
+    private chatProvider: ChathandlingProvider,
+    private apihandlingProvider: ApihandlingProvider,
+    private loghandlingProvider: LoghandlingProvider,
+    private loadingController:LoadingController) {
     this.user = this.navParams.get('user');
+
+    this.loading = this.loadingController.create();
+
+    this.loghandlingProvider.showLog(this.TAG, "calling api");
+    this.loading.present();
+    this.apihandlingProvider.callRequest(ConstantProvider.BASE_URL + "getUserToChat").subscribe(res => {
+      this.channelId = res.uid + "-" + this.user.uid;
+      this.loghandlingProvider.showLog(this.TAG,'Channel ID : ' + this.channelId);
+      this.loadData();
+    },err => {
+      this.loghandlingProvider.showLog(this.TAG, err.message);
+    });
+
   }
 
   /**
-   * execute after view loaded.
+   * Load data for personal chennal.
    */
-  ionViewDidLoad() {
-    this.chatProvider.getMessages()
+  loadData(){
+    this.loghandlingProvider.showLog(this.TAG, this.channelId);
+
+    this.chatProvider.getPersonalMessages(this.channelId)
       .subscribe((messages => this.chatMessages = messages));
+
+    this.loading.dismiss();
 
     if (this.platform.is('cordova')) {
       this.keyboard.onKeyboardShow()
@@ -79,7 +108,7 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
     if (!this.chatText)
       return;
 
-    this.chatProvider.sendMessage((this.user as any).$key, this.chatText)
+    this.chatProvider.sendPersonalMessage((this.user as any).$key, this.chatText, this.channelId)
       .then(() => {
           this.chatText = '';
           this.scrollDown();
