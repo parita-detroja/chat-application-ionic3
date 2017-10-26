@@ -26,6 +26,7 @@ export class MyApp {
    * @param statusBar 
    * @param splashScreen 
    * @param loghandlingProvider 
+   * @param localstorageProvider
    */
   constructor(private platform: Platform, private statusBar: StatusBar, private splashScreen: SplashScreen, 
   private loghandlingProvider: LoghandlingProvider, private authenticationProvider: AuthenticationProvider,
@@ -72,11 +73,13 @@ export class MyApp {
       this.platform.registerBackButtonAction(() => {
           // get current active page
           let view = this.nav.getActive();
-          if (view.component.name == "ChatMessagePage") {          
-            this.nav.setRoot('TabsPage');
-          } else {
-              // go to previous page
-              this.nav.pop({});
+          if (view.component.name === "ChatMessagePage" || view.component.name === "ParsonalchatPage") {
+            this.loghandlingProvider.showLog(this.TAG,'back of perticular');
+            this.nav.pop();
+          } else if(this.nav.canGoBack()){
+            this.nav.pop();
+          } else{
+            this.platform.exitApp();
           }
       });
     });
