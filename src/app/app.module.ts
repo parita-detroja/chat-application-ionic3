@@ -6,6 +6,9 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { Facebook } from '@ionic-native/facebook';
 import { HttpModule } from '@angular/http';
 import { Keyboard } from '@ionic-native/keyboard';
+import { File } from '@ionic-native/file';
+import { FileChooser } from '@ionic-native/file-chooser';
+import { FilePath } from '@ionic-native/file-path';
 
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireModule } from 'angularfire2';
@@ -25,6 +28,7 @@ import { ContactslistProvider } from '../providers/contactslist/contactslist';
 import { ChathandlingProvider } from '../providers/chathandling/chathandling';
 import { EmojiProvider } from '../providers/emojiprovider/emojiprovider';
 import { AutoSizeDirective } from '../directives/auto-size/auto-size';
+import { MessageimagehandlerProvider } from '../providers/messageimagehandler/messageimagehandler';
 
 @NgModule({
   declarations: [
@@ -53,12 +57,16 @@ import { AutoSizeDirective } from '../directives/auto-size/auto-size';
     ConstantProvider,
     Facebook,
     Keyboard,
+    File,
+    FileChooser,
+    FilePath,
     ApihandlingProvider,
     AngularFireAuth,
     LocalstorageProvider,
     ContactslistProvider,
     ChathandlingProvider,
-    EmojiProvider
+    EmojiProvider,
+    MessageimagehandlerProvider
   ]
 })
 export class AppModule {}
