@@ -14,12 +14,12 @@ export class MessageimagehandlerProvider {
   constructor(public filechooser: FileChooser) {
   }
 
-  /*
-    For uploading an image to firebase storage.
-    Called from - profilepic.ts
-    Inputs - None.
-    Outputs - The image url of the stored image.
-  */
+  /**
+   * For uploading an image to firebase storage.
+   * Called from - profilepic.ts
+   * Inputs - None.
+   * Outputs - The image url of the stored image.
+   */
   uploadimage() {
     var promise = new Promise((resolve, reject) => {
         this.filechooser.open().then((url) => {
@@ -83,6 +83,9 @@ export class MessageimagehandlerProvider {
      return promise;   
   }
  
+ /**
+  * Generate uuid for image unique identification. 
+  */
   guid() {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)

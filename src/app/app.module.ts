@@ -6,9 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { Facebook } from '@ionic-native/facebook';
 import { HttpModule } from '@angular/http';
 import { Keyboard } from '@ionic-native/keyboard';
-import { File } from '@ionic-native/file';
 import { FileChooser } from '@ionic-native/file-chooser';
-import { FilePath } from '@ionic-native/file-path';
 
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireModule } from 'angularfire2';
@@ -57,9 +55,7 @@ import { MessageimagehandlerProvider } from '../providers/messageimagehandler/me
     ConstantProvider,
     Facebook,
     Keyboard,
-    File,
     FileChooser,
-    FilePath,
     ApihandlingProvider,
     AngularFireAuth,
     LocalstorageProvider,
