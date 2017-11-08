@@ -63,6 +63,18 @@ export class LoginPage {
    */
   loginWithGoogle(){
     //google login 
+    let loading = this.loadingCtrl.create();
+    loading.present();
+    this.authenticationProvider.signInWithGoogle()
+      .then((res) => {
+        this.updateProfile(res.user || res);
+        loading.dismiss();
+        this.navCtrl.setRoot('TabsPage');
+      }, (error) => {
+        loading.dismiss();
+        this.showMessage(error && error.message);
+      });
+
   }
 
   /**
