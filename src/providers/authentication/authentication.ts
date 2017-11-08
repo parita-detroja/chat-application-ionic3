@@ -29,7 +29,7 @@ export class AuthenticationProvider {
    * Basic constructor for LogServiceProvider.
    */
   constructor(private loghandlingProvider: LoghandlingProvider, private platform: Platform,
-  private facebook: Facebook, private angularFireAuth: AngularFireAuth, 
+  private facebook: Facebook, private GooglePlus: GooglePlus, private angularFireAuth: AngularFireAuth, 
   private angularFireDatabase: AngularFireDatabase, private localstorageProvider: LocalstorageProvider) {
     this.loghandlingProvider.showLog(this.TAG,'Hello AuthenticationProvider Provider');
   }
