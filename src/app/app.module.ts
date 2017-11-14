@@ -8,6 +8,7 @@ import { GooglePlus } from '@ionic-native/google-plus';
 import { HttpModule } from '@angular/http';
 import { Keyboard } from '@ionic-native/keyboard';
 import { FileChooser } from '@ionic-native/file-chooser';
+import { Camera } from '@ionic-native/camera';
 
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireModule } from 'angularfire2';
@@ -60,6 +61,7 @@ import { Push } from "@ionic-native/push";
     GooglePlus,
     Keyboard,
     FileChooser,
+    Camera,
     Push,
     ApihandlingProvider,
     AngularFireAuth,

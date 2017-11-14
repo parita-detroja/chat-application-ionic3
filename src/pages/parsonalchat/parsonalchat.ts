@@ -8,6 +8,8 @@ import { ApihandlingProvider } from '../../providers/apihandling/apihandling';
 import { LoghandlingProvider } from '../../providers/loghandling/loghandling';
 import { ConstantProvider } from '../../providers/constant/constant';
 import { MessageimagehandlerProvider } from '../../providers/messageimagehandler/messageimagehandler';
+import { OnlineHandlingProvider } from '../../providers/online-handling/online-handling';
+import { AlerthandlingProvider } from '../../providers/alerthandling/alerthandling';
 
 /**
  * Generated class for the ParsonalchatPage page.
@@ -55,10 +57,15 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
     private apihandlingProvider: ApihandlingProvider,
     private loghandlingProvider: LoghandlingProvider,
     private loadingController:LoadingController,
-    private messageimagehandlerProvider: MessageimagehandlerProvider) {
+    private messageimagehandlerProvider: MessageimagehandlerProvider,
+    private onlineHandlingProvider: OnlineHandlingProvider,
+    private alerthandlingProvider: AlerthandlingProvider) {
     this.user = this.navParams.get('user');
+    this.channelId = this.navParams.get('channelId');
 
-    this.loading = this.loadingController.create({
+    this.loadData();
+
+    /*this.loading = this.loadingController.create({
       content: 'Please wait'
     });
 
@@ -75,7 +82,8 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
       this.loadData();
     },err => {
       this.loghandlingProvider.showLog(this.TAG, err.message);
-    });
+      this.loading.dismiss();
+    });*/
 
   }
 
@@ -86,9 +94,13 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
     this.loghandlingProvider.showLog(this.TAG, this.channelId);
 
     this.chatProvider.getPersonalMessages(this.channelId)
-      .subscribe((messages => this.chatMessages = messages));
-
-    this.loading.dismiss();
+      .subscribe(messages => {
+        if(messages.length > 0)
+        {
+          this.chatMessages = messages;
+          this.loghandlingProvider.showLog(this.TAG,"message subscribed");
+        }
+      });
 
     if (this.platform.is('cordova')) {
       this.keyboard.onKeyboardShow()
@@ -108,6 +120,7 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
    */
   ngOnDestroy() {
     this.autoScroller.disconnect();
+    ConstantProvider.setAlreadySubscribed(false);
   }
 
   /**
@@ -220,5 +233,19 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
       alert(err);
       this.loading.dismiss();
     })
+  }
+
+  /**
+   * Generates specific delete chat confirmation dialog.
+   * @param e event specify direction of swipe.
+   */
+  swipeEvent(e) {
+    if (e.direction == 4 || e.direction == 2) {
+      this.alerthandlingProvider.confirmAlert("Confirm delete","Are you sure you want to delete the chat?").then((res) => {
+        this.onlineHandlingProvider.deleteChat(this.user.uid,this.channelId);
+      }, err => {
+        this.loghandlingProvider.showLog(this.TAG, "user cancelled.");
+      })
+    }
   }
 }

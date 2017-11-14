@@ -87,7 +87,8 @@ export class OneTwoOnePage {
     this.loghandlingProvider.showLog(this.TAG, this.channelId);
 
     this.chatProvider.getOneTwoOneMessages(this.channelId)
-      .subscribe((messages => this.chatMessages = messages));
+      .subscribe(messages => {this.chatMessages = messages;
+      this.loghandlingProvider.showLog(this.TAG,"message subscribed")});
 
     if (this.platform.is('cordova')) {
       this.keyboard.onKeyboardShow()
@@ -213,7 +214,8 @@ export class OneTwoOnePage {
         this.chatText = '';
         this.scrollDown();
       }, (error) => {
-          this.loghandlingProvider.showLog(this.TAG, error.toString());
+        this.loghandlingProvider.showLog(this.TAG, error.toString());
+        this.loading.dismiss();
       })
     }).catch((err) => {
       alert(err);

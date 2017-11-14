@@ -15,7 +15,7 @@
 
 <ion-content class="messages">
   <ion-list no-padding *ngIf="user">
-    <div *ngFor="let message of chatMessages; let i = index">
+    <div *ngFor="let message of chatMessages; let i = index" (swipe)="swipeEvent($event)">
       <fieldset *ngIf="i == 0 || (i > 0) && message.day != chatMessages[i-1].day">
         <legend align="center" *ngIf="isToday(message.timestamp)">
             today
