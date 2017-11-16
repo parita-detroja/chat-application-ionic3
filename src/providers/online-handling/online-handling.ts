@@ -47,9 +47,9 @@ export class OnlineHandlingProvider {
    */
   checkActiveChatWith(userId: string) {
     return this.angularFireDatabase.list(`${tableNames.User}/${userId}/${"meta"}/${"message"}`)
-      .map(uids => uids.map((item) => {
-          return item;
-      }));
+    .map(uids => uids.map((item) => {
+      return item;
+    }));
   }
 
   updateUserStatus(userId: string){
@@ -60,12 +60,28 @@ export class OnlineHandlingProvider {
     });
   }
 
-  deleteChat(userId: string,channelId: string){
-    this.loghandlingProvider.showLog(this.TAG, "Deleted user chat for online.");
-    return this.angularFireDatabase.list(`${tableNames.PersonalMessage}/${channelId}/${"meta"}/${"deleted_by"}`)
+  deleteChat(userId: string, channelId: string){
+    this.loghandlingProvider.showLog(this.TAG, "Deleting user chat.");
+    return this.angularFireDatabase.object(`${tableNames.PersonalMessage}/${channelId}/${"meta"}/${"deleted_by"}`)
+    .update({
+      userId
+    });
+  }
+
+  addFavoriteChat(userId: string, channelId: string){
+    this.loghandlingProvider.showLog(this.TAG, "Adding user favorite.");
+    return this.angularFireDatabase.list(`${tableNames.PersonalMessage}/${channelId}/${"meta"}/${"fav_by"}`)
     .push({
       userId
     });
+  }
+
+  isFavorited(channelId: string){
+    this.loghandlingProvider.showLog(this.TAG, "From is fav method.");
+    return this.angularFireDatabase.list(`${tableNames.PersonalMessage}/${channelId}/${"meta"}/${"fav_by"}`)
+    .map(contacts => contacts.map((item) => {
+      return item;
+    }));
   }
 
 }

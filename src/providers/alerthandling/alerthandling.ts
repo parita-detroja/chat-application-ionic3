@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AlertController} from 'ionic-angular';
 
 import { LoghandlingProvider } from '../loghandling/loghandling';
-import { ConstantProvider } from '../constant/constant';
 
 /*
   Generated class for the AlerthandlingProvider provider.

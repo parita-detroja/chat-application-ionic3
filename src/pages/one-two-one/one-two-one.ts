@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavParams, Platform, TextInput, Content, LoadingController } from 'ionic-angular';
+import { IonicPage, NavParams, Platform, TextInput, Content, LoadingController, 
+  ActionSheetController } from 'ionic-angular';
 import { Keyboard } from '@ionic-native/keyboard';
 
 import { ChathandlingProvider } from '../../providers/chathandling/chathandling';
@@ -54,7 +55,8 @@ export class OneTwoOnePage {
     private loghandlingProvider: LoghandlingProvider,
     private loadingController:LoadingController,
     private messageimagehandlerProvider: MessageimagehandlerProvider, 
-    private authenticationProvider: AuthenticationProvider) {
+    private authenticationProvider: AuthenticationProvider,
+    private actionSheetController: ActionSheetController) {
     this.user = this.navParams.get('user');
 
     this.loading = this.loadingController.create({
@@ -222,5 +224,42 @@ export class OneTwoOnePage {
       this.loading.dismiss();
     })
   }
+
+  presentActionSheet() {
+   let actionSheet = this.actionSheetController.create({
+     buttons: [
+       {
+         text: 'Camera',
+         icon: 'md-camera',
+         handler: () => {
+           console.log('Camera');
+         }
+       },
+       {
+         text: 'Gallery',
+         icon: 'md-image',
+         handler: () => {
+           console.log('Gallery');
+         }
+       },
+       {
+         text: 'Location',
+         icon: 'md-pin',
+         handler: () => {
+           console.log('Location');
+         }
+       },
+       {
+         text: 'Contact',
+         icon: 'md-contact',
+         handler: () => {
+           console.log('Contact');
+         }
+       }
+     ]
+   });
+
+   actionSheet.present();
+ }
 
 }

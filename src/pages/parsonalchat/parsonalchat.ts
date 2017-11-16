@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { IonicPage, NavParams, Platform, TextInput, Content, LoadingController } from 'ionic-angular';
+import { IonicPage, NavParams, Platform, TextInput, Content, LoadingController, NavController} from 'ionic-angular';
 import { Keyboard } from '@ionic-native/keyboard';
 
 import { ChathandlingProvider } from '../../providers/chathandling/chathandling';
 import { UserModel } from '../../providers/authentication/authentication';
-import { ApihandlingProvider } from '../../providers/apihandling/apihandling';
 import { LoghandlingProvider } from '../../providers/loghandling/loghandling';
 import { ConstantProvider } from '../../providers/constant/constant';
 import { MessageimagehandlerProvider } from '../../providers/messageimagehandler/messageimagehandler';
@@ -25,12 +24,12 @@ import { AlerthandlingProvider } from '../../providers/alerthandling/alerthandli
 export class ParsonalchatPage implements OnInit, OnDestroy {
 
   private TAG: string = 'ParsonalchatPage';
-  chatText: string = '';
-  chatMessages: Array<string>;
-  textMaxLength: number = 400;
-  user: UserModel;
-  channelId: string;
-  loading: any;
+  private chatText: string = '';
+  private chatMessages: Array<string>;
+  private user: UserModel;
+  private channelId: string;
+  private loading: any;
+  private favoriteFlag: any;
 
   showEmojiPicker = false;
   @ViewChild('chat_input') messageInput: TextInput;
@@ -54,38 +53,46 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
     private platform: Platform,
     private keyboard: Keyboard,
     private chatProvider: ChathandlingProvider,
-    private apihandlingProvider: ApihandlingProvider,
     private loghandlingProvider: LoghandlingProvider,
     private loadingController:LoadingController,
     private messageimagehandlerProvider: MessageimagehandlerProvider,
     private onlineHandlingProvider: OnlineHandlingProvider,
-    private alerthandlingProvider: AlerthandlingProvider) {
+    private alerthandlingProvider: AlerthandlingProvider,
+    private navController: NavController) {
     this.user = this.navParams.get('user');
     this.channelId = this.navParams.get('channelId');
 
-    this.loadData();
-
-    /*this.loading = this.loadingController.create({
-      content: 'Please wait'
+    this.checkFavorited().then((res :any) => {
+      this.loghandlingProvider.showLog(this.TAG,"favorite flag : " + res);
+      this.favoriteFlag = res;
+    }).catch((err) => {
+      this.favoriteFlag = false;
+      alert(err);
     });
 
-    this.loghandlingProvider.showLog(this.TAG, "calling api");
-    this.loading.present();
-    this.apihandlingProvider.callRequest(ConstantProvider.BASE_URL + "getUserToChat").subscribe(res => {
-      if(this.user.uid > res.uid)
-      {
-        this.channelId = this.user.uid + "-" + res.uid;
-      }else {
-        this.channelId = res.uid + "-" + this.user.uid ;
-      }
-      this.loghandlingProvider.showLog(this.TAG,'Channel ID : ' + this.channelId);
-      this.loadData();
-    },err => {
-      this.loghandlingProvider.showLog(this.TAG, err.message);
-      this.loading.dismiss();
-    });*/
 
+    this.loadData();
   }
+
+  /**
+   * Check whether user favorited chat or not.
+   */
+  checkFavorited(){
+    var promise = new Promise((resolve, reject) => {
+      this.onlineHandlingProvider.isFavorited(this.channelId).subscribe((contacts) => {
+        this.loghandlingProvider.showLog(this.TAG, "contacts : " + contacts.length);
+        contacts.forEach(element => {
+          this.loghandlingProvider.showLog(this.TAG, "Contact : " + JSON.stringify(element));
+          if(element.userId == this.user.uid)
+          {
+            resolve(true);
+          }
+        });
+        resolve(false);
+    });
+  })
+  return promise;
+}
 
   /**
    * Load data for personal chennal.
@@ -241,11 +248,29 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
    */
   swipeEvent(e) {
     if (e.direction == 4 || e.direction == 2) {
-      this.alerthandlingProvider.confirmAlert("Confirm delete","Are you sure you want to delete the chat?").then((res) => {
-        this.onlineHandlingProvider.deleteChat(this.user.uid,this.channelId);
-      }, err => {
-        this.loghandlingProvider.showLog(this.TAG, "user cancelled.");
-      })
+      this.deleteChatHandling();
     }
+  }
+
+  deleteChatHandling(){
+    this.alerthandlingProvider.confirmAlert("Confirm delete","Are you sure you want to delete the chat?").then((res) => {
+      if(this.favoriteFlag == false){
+        this.onlineHandlingProvider.deleteChat(this.user.uid,this.channelId);
+        this.navController.pop();
+        let loading = this.loadingController.create();
+        loading.present();
+        this.navController.setRoot("TabsPage");
+        loading.dismiss();
+      }else{
+        this.loghandlingProvider.showLog(this.TAG, "No delete for Favorited user.");
+      }
+    }, err => {
+      this.loghandlingProvider.showLog(this.TAG, "user cancelled.");
+    })
+  }
+
+  addToFavorite(){
+    this.favoriteFlag = true;
+    this.onlineHandlingProvider.addFavoriteChat(this.user.uid,this.channelId);
   }
 }

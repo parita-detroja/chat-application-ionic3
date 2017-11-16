@@ -69,7 +69,7 @@ export class MessageimagehandlerProvider {
     })
     return promise;
     })
-     return promise;   
+    return promise;   
   }
  
   /**
