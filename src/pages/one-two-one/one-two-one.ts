@@ -1,12 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavParams, Platform, TextInput, Content, LoadingController, 
-  ActionSheetController } from 'ionic-angular';
+import { IonicPage, NavParams, Platform, TextInput, Content, LoadingController } from 'ionic-angular';
 import { Keyboard } from '@ionic-native/keyboard';
 
 import { ChathandlingProvider } from '../../providers/chathandling/chathandling';
 import { AuthenticationProvider , UserModel } from '../../providers/authentication/authentication';
 import { LoghandlingProvider } from '../../providers/loghandling/loghandling';
 import { MessageimagehandlerProvider } from '../../providers/messageimagehandler/messageimagehandler';
+import { ActionSheetProvider } from '../../providers/action-sheet/action-sheet';
 
 /**
  * Generated class for the OneTwoOnePage page.
@@ -56,7 +56,7 @@ export class OneTwoOnePage {
     private loadingController:LoadingController,
     private messageimagehandlerProvider: MessageimagehandlerProvider, 
     private authenticationProvider: AuthenticationProvider,
-    private actionSheetController: ActionSheetController) {
+    private actionSheetProvider: ActionSheetProvider) {
     this.user = this.navParams.get('user');
 
     this.loading = this.loadingController.create({
@@ -225,41 +225,11 @@ export class OneTwoOnePage {
     })
   }
 
+  /**
+   * Generate action sheet for different things.
+   */
   presentActionSheet() {
-   let actionSheet = this.actionSheetController.create({
-     buttons: [
-       {
-         text: 'Camera',
-         icon: 'md-camera',
-         handler: () => {
-           console.log('Camera');
-         }
-       },
-       {
-         text: 'Gallery',
-         icon: 'md-image',
-         handler: () => {
-           console.log('Gallery');
-         }
-       },
-       {
-         text: 'Location',
-         icon: 'md-pin',
-         handler: () => {
-           console.log('Location');
-         }
-       },
-       {
-         text: 'Contact',
-         icon: 'md-contact',
-         handler: () => {
-           console.log('Contact');
-         }
-       }
-     ]
-   });
-
-   actionSheet.present();
- }
+    this.actionSheetProvider.presentActionSheet();
+  }
 
 }
