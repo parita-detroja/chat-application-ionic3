@@ -17,6 +17,7 @@
       <ion-item *ngIf="contact.email !== email" (click)="joinChat(contact.uid)">
         <ion-avatar item-start>
           <img [src]="contact.photoURL || 'assets/img/noavatar.png'">
+          <img *ngIf="checkOnlineStatus(contact.uid) == true" [src]="'assets/img/online.png'" class="online-img">
         </ion-avatar>
         <h2>{{contact.displayName}}</h2>
         <p>{{contact.email}}</p>
