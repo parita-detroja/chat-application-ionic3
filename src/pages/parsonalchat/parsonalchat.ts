@@ -3,6 +3,8 @@ import { IonicPage, NavParams, Platform, TextInput, Content, LoadingController, 
 import { Keyboard } from '@ionic-native/keyboard';
 import { GoogleMaps, GoogleMap, GoogleMapsEvent, GoogleMapOptions, CameraPosition, MarkerOptions, Marker } 
 from '@ionic-native/google-maps';
+import { Geolocation } from '@ionic-native/geolocation';
+
 import { ChathandlingProvider } from '../../providers/chathandling/chathandling';
 import { UserModel } from '../../providers/authentication/authentication';
 import { LoghandlingProvider } from '../../providers/loghandling/loghandling';
@@ -11,7 +13,7 @@ import { MessageimagehandlerProvider } from '../../providers/messageimagehandler
 import { OnlineHandlingProvider } from '../../providers/online-handling/online-handling';
 import { AlerthandlingProvider } from '../../providers/alerthandling/alerthandling';
 import { ActionSheetProvider } from '../../providers/action-sheet/action-sheet';
-import { Geolocation } from '@ionic-native/geolocation';
+import { VideocallProvider } from '../../providers/videocall/videocall';
 
 /**
  * Generated class for the ParsonalchatPage page.
@@ -66,7 +68,8 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
     private navController: NavController,
     private actionSheetProvider: ActionSheetProvider,
     private geolocation: Geolocation,
-    private googleMaps: GoogleMaps) {
+    private googleMaps: GoogleMaps,
+    private videocallProvider: VideocallProvider) {
     this.user = this.navParams.get('user');
     this.channelId = this.navParams.get('channelId');
 
@@ -390,5 +393,13 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
 
       });
   }*/
+
+  makeVideoCall(calleeId){
+    this.videocallProvider.MakeCall(calleeId)
+  }
+
+  hangUp(){
+    this.videocallProvider.HangUp();
+  }
 
 }

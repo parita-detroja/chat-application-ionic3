@@ -92,4 +92,12 @@ export class OnlineHandlingProvider {
     })
     return promise;
   }
+
+  updateApiRTCId(apiRTCId){
+    this.loghandlingProvider.showLog(this.TAG, "Updating api rtc id to : " + apiRTCId);
+    return this.angularFireDatabase.list(`${tableNames.User}`)
+    .update(firebase.auth().currentUser.uid, {
+      apiRTCId: apiRTCId,
+    });
+  }
 }

@@ -260,7 +260,6 @@ export class AuthenticationProvider {
       }
     });
   }
-
 }
 
 export class UserModel {
