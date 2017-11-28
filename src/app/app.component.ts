@@ -49,6 +49,10 @@ export class MyApp {
     this.events.subscribe('apiCCId generated', (myCallId) => {
       this.onlineHandlingProvider.updateApiRTCId(myCallId);
     });
+
+    this.events.subscribe('Incoming call.', (incomingCallId) => {
+      this.nav.push('IncomingCallPage', {incomingCallId : incomingCallId});
+    });
     
     this.pages = [
       { title: 'Set Online', component: 'SetOnlinePage' },

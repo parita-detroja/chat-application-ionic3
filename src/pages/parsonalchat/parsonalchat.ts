@@ -37,6 +37,7 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
   private key: number;
   private map: GoogleMap;
   private elementMap: HTMLElement;
+  private calleeId: string;
 
   showEmojiPicker = false;
   @ViewChild('chat_input') messageInput: TextInput;
@@ -73,6 +74,18 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
     this.user = this.navParams.get('user');
     this.channelId = this.navParams.get('channelId');
 
+    let userId = this.navParams.get('userId');
+
+    this.onlineHandlingProvider.fatchApiRTCId(userId).forEach(element => {
+      let user: any = JSON.stringify(element);
+      this.loghandlingProvider.showLog(this.TAG, "user : " + user);
+      for(let key in element){
+        this.calleeId = element[key];
+      }
+    });
+
+    this.loghandlingProvider.showLog(this.TAG, "calleeId : " + this.calleeId);
+    
     this.checkFavorited().then((res: any) => {
       this.loghandlingProvider.showLog(this.TAG, "favorite flag : " + res);
       this.favoriteFlag = res;
@@ -394,8 +407,14 @@ export class ParsonalchatPage implements OnInit, OnDestroy {
       });
   }*/
 
-  makeVideoCall(calleeId){
-    this.videocallProvider.MakeCall(calleeId)
+  makeVideoCall(){
+    if(this.calleeId){
+      this.videocallProvider.MakeCall(this.calleeId)
+      this.navController.setRoot("IncomingCallPage");
+    }else{
+      alert("Not able to fatch callee Id.");
+    }
+    
   }
 
   hangUp(){

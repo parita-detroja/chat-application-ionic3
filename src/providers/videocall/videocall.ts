@@ -156,6 +156,7 @@ export class VideocallProvider {
     apiRTC.addEventListener("incomingCall", (e) => {
       this.InitializeControlsForIncomingCall();
       this.incomingCallId = e.detail.callId;
+      this.events.publish('Incoming call.', this.incomingCallId);
     });
 
     apiRTC.addEventListener("hangup", (e) => {
